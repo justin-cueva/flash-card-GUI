@@ -7,7 +7,9 @@ BACKGROUND_COLOR = "#B1DDC6"
 class Flashy_UI:
     def __init__(self, words_to_learn):
         self.words_to_learn = words_to_learn
+
         self.window = tkinter.Tk()
+        self.timer = self.window.after(ms=3000, func=self.flip_card)
 
         # SETTING UP THE WINDOW
         self.window.config(padx=50, pady=50, bg=BACKGROUND_COLOR)
@@ -15,9 +17,9 @@ class Flashy_UI:
 
         # SETTING UP THE CARD
         self.canvas = tkinter.Canvas(bg=BACKGROUND_COLOR, width=800, height=526, highlightthickness=0)
-        front_card = tkinter.PhotoImage(file="images/card_front.png")
-        back_card = tkinter.PhotoImage(file="images/card_back.png")
-        self.canvas.create_image(400, 263, image=front_card)
+        self.front_card = tkinter.PhotoImage(file="images/card_front.png")
+        self.back_card = tkinter.PhotoImage(file="images/card_back.png")
+        self.current_card_image = self.canvas.create_image(400, 263, image=self.front_card)
         self.language = self.canvas.create_text(400, 150, text="French",  font=("Arial", 40, "italic"), fill="#000000")
         self.word = self.canvas.create_text(400, 263, text="Some Word", font=("Arial", 60, "bold"), fill="#000000")
         self.canvas.grid(row=0, column=0, columnspan=2)
@@ -34,5 +36,15 @@ class Flashy_UI:
         self.window.mainloop()
 
     def next_word(self):
-        current_word = random.choice(self.words_to_learn)
-        self.canvas.itemconfig(self.word, text=current_word["French"])
+        print(len(self.words_to_learn))
+        self.window.after_cancel(self.timer)
+        self.current_word = random.choice(self.words_to_learn)
+        self.canvas.itemconfig(self.word, text=self.current_word["French"])
+        self.canvas.itemconfig(self.current_card_image, image=self.front_card)
+        self.canvas.itemconfig(self.language, text="French")
+        self.timer = self.window.after(ms=3000, func=self.flip_card)
+
+    def flip_card(self):
+        self.canvas.itemconfig(self.word, text=self.current_word["English"])
+        self.canvas.itemconfig(self.language, text="English")
+        self.canvas.itemconfig(self.current_card_image, image=self.back_card)
