@@ -1,4 +1,5 @@
 import tkinter
+import random
 
 BACKGROUND_COLOR = "#B1DDC6"
 
@@ -17,16 +18,21 @@ class Flashy_UI:
         front_card = tkinter.PhotoImage(file="images/card_front.png")
         back_card = tkinter.PhotoImage(file="images/card_back.png")
         self.canvas.create_image(400, 263, image=front_card)
-        self.language = self.canvas.create_text(400, 150, text="Language",  font=("Arial", 40, "italic"), fill="#000000")
+        self.language = self.canvas.create_text(400, 150, text="French",  font=("Arial", 40, "italic"), fill="#000000")
         self.word = self.canvas.create_text(400, 263, text="Some Word", font=("Arial", 60, "bold"), fill="#000000")
         self.canvas.grid(row=0, column=0, columnspan=2)
 
         # SETTING UP THE BUTTONS
         wrong_button = tkinter.PhotoImage(file="images/wrong.png")
-        self.wrong_button = tkinter.Button(image=wrong_button, highlightthickness=0)
+        self.wrong_button = tkinter.Button(image=wrong_button, highlightthickness=0, command=self.next_word)
         self.wrong_button.grid(row=1, column=0)
         right_button = tkinter.PhotoImage(file="images/right.png")
-        self.right_button = tkinter.Button(image=right_button, highlightthickness=0)
+        self.right_button = tkinter.Button(image=right_button, highlightthickness=0, command=self.next_word)
         self.right_button.grid(row=1, column=1)
 
+        self.next_word()
         self.window.mainloop()
+
+    def next_word(self):
+        current_word = random.choice(self.words_to_learn)
+        self.canvas.itemconfig(self.word, text=current_word["French"])
