@@ -3,7 +3,7 @@ from word_data import data
 
 words_to_learn = data.to_dict(orient="records")
 
-# TODO: 1. after 3 seconds flip the card
+# TODO: 1. after we press the check button then create a new csv file
 # TODO: 2.
 # TODO: 3.
 
