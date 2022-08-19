@@ -1,11 +1,13 @@
 import tkinter
 import random
+import pandas
+import word_data
 
 BACKGROUND_COLOR = "#B1DDC6"
 
 
 class Flashy_UI:
-    def __init__(self, words_to_learn):
+    def __init__(self, words_to_learn: word_data.data):
         self.words_to_learn = words_to_learn
 
         self.window = tkinter.Tk()
@@ -29,20 +31,28 @@ class Flashy_UI:
         self.wrong_button = tkinter.Button(image=wrong_button, highlightthickness=0, command=self.next_word)
         self.wrong_button.grid(row=1, column=0)
         right_button = tkinter.PhotoImage(file="images/right.png")
-        self.right_button = tkinter.Button(image=right_button, highlightthickness=0, command=self.next_word)
+        self.right_button = tkinter.Button(image=right_button, highlightthickness=0, command=self.card_is_known)
         self.right_button.grid(row=1, column=1)
 
         self.next_word()
         self.window.mainloop()
 
     def next_word(self):
-        print(len(self.words_to_learn))
         self.window.after_cancel(self.timer)
         self.current_word = random.choice(self.words_to_learn)
         self.canvas.itemconfig(self.word, text=self.current_word["French"])
         self.canvas.itemconfig(self.current_card_image, image=self.front_card)
         self.canvas.itemconfig(self.language, text="French")
         self.timer = self.window.after(ms=3000, func=self.flip_card)
+
+    def card_is_known(self):
+        self.words_to_learn.remove(self.current_word)
+        # self.words_to_learn.to_csv("words_to_learn.csv")
+        print(len(self.words_to_learn))
+        data_frame = pandas.DataFrame(self.words_to_learn)
+        data_frame.to_csv("data/words_to_learn.csv", index=False)
+        # new_data.to_csv("data/words_to_learn.csv")
+        self.next_word()
 
     def flip_card(self):
         self.canvas.itemconfig(self.word, text=self.current_word["English"])
